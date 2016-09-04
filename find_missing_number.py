@@ -19,6 +19,7 @@ def arr_to_hash_method(a, max):
 
 print "storing method, missing number is", arr_to_hash_method(arr, max)
 
+# better and faster method using only one loop and math:
 def quick_math_method(a, max):
     # get sum of all nums from 1 to max
     expected = 0
