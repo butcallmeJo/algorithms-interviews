@@ -4,8 +4,6 @@ import requests
 import sys
 import argparse
 import datetime
-# uncomment next line if making more than 60 requests per hour
-# import extheaders from github_config
 
 """all_github_repos.py
 
@@ -23,19 +21,14 @@ def fetch_all_repositories(user):
     user - the username used to construct the correct requests to the Github
     API.
     """
-    # headers = extheaders
     resp_repos = requests.get(
         'https://api.github.com/users/' + user + '/repos',
         auth=('Holberton_School', 'fffa38b10948aa7eff293682308672bc95672ae3')
         )
-    # print resp_repos.status_code
     repos_json = resp_repos.json()
-    # print len(repos_json)
     repos_dict = {}
     for i in range(len(repos_json)):
-        # print i
         name = repos_json[i]["name"]
-        # print name
         date = datetime.datetime.strptime(
             repos_json[i]["created_at"], '%Y-%m-%dT%H:%M:%SZ'
             )
@@ -43,7 +36,6 @@ def fetch_all_repositories(user):
             sha = requests.get('https://api.github.com/repos/' + user + '/' + name + '/commits', auth=('Holberton_School', 'fffa38b10948aa7eff293682308672bc95672ae3')).json()[0]["sha"]
         except:
             print "error getting sha for %s" % (name)
-        # sha = "test for now"
         if name not in repos_dict:
             repos_dict[name] = [date, sha]
     
