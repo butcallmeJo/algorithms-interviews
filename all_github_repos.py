@@ -5,7 +5,7 @@ import sys
 import argparse
 import datetime
 # uncomment next line if making more than 60 requests per hour
-# import config from github_config
+# import extheaders from github_config
 
 """all_github_repos.py
 
@@ -13,24 +13,46 @@ Python script to get all Github repositories from a given username and order
 them by creation date as well as output their last commits' SHA1.
 """
 
+def sort_dict_by_date(repos_dict):
+    sorted_list = sorted(repos_dict.items(), key=lambda e: e[1][0])
+    sorted_list = [x[0] for x in sorted_list]
+    return sorted_list
+
 def fetch_all_repositories(user):
     """function to fetch_all_repositories from user and process the data
     user - the username used to construct the correct requests to the Github
     API.
     """
-    resp_repos = requests.get('https://api.github.com/users/' + user + '/repos')
+    # headers = extheaders
+    resp_repos = requests.get(
+        'https://api.github.com/users/' + user + '/repos',
+        auth=('Holberton_School', 'fffa38b10948aa7eff293682308672bc95672ae3')
+        )
+    # print resp_repos.status_code
     repos_json = resp_repos.json()
+    # print len(repos_json)
     repos_dict = {}
     for i in range(len(repos_json)):
+        # print i
         name = repos_json[i]["name"]
+        # print name
         date = datetime.datetime.strptime(
             repos_json[i]["created_at"], '%Y-%m-%dT%H:%M:%SZ'
             )
-        sha = requests.get('https://api.github.com/repos/' + user + '/' + name + '/commits').json()[0]["sha"]
+        try:
+            sha = requests.get('https://api.github.com/repos/' + user + '/' + name + '/commits', auth=('Holberton_School', 'fffa38b10948aa7eff293682308672bc95672ae3')).json()[0]["sha"]
+        except:
+            print "error getting sha for %s" % (name)
+        # sha = "test for now"
         if name not in repos_dict:
             repos_dict[name] = [date, sha]
     
-    print repos_dict
+    sorted_list = sort_dict_by_date(repos_dict)
+    
+    for repo in sorted_list:
+        print repo
+        print "\t%s" % (str(repos_dict[repo][0]))
+        print "\t%s\n" % (repos_dict[repo][1])
 
 def main(argv):
     """Main part of the program"""
@@ -51,7 +73,4 @@ def main(argv):
     fetch_all_repositories(user)
 
 if __name__ == "__main__":
-    try:
-        main(sys.argv)
-    except:
-        sys.exit()
+    main(sys.argv)
