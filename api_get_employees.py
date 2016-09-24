@@ -36,7 +36,7 @@ def print_employee_hierarchy(tab_size=0, id):
 
     for _ in range(tab_size):
         print "\t",
-        print "%s - %s" % (name, title)
+    print "%s - %s" % (name, title)
 
     if not reports: 
         return
