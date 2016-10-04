@@ -5,23 +5,20 @@
 # - how many requests successed (status code 200)
 # - how many requests forbidden (status code 403)
 
+import requests
+
 def puma_log():
     log_resp = requests.get(
         "https://s3.amazonaws.com/holbertonintranet/files/sandbox/puma_small.log"
     )
     sql_cmds = {}
     for line in log_resp.iter_lines():
-        print line
+        # print line
         if "DELETE" in line:
             if "DELETE" in sql_cmds:
                 sql_cmds["DELETE"] += 1
             else:
                 sql_cmds["DELETE"] = 1
-        if "UPDATE" in line:
-            if "UPDATE" in sql_cmds:
-                sql_cmds["UPDATE"] += 1
-            else:
-                sql_cmds["UPDATE"] = 1
         if "UPDATE" in line:
             if "UPDATE" in sql_cmds:
                 sql_cmds["UPDATE"] += 1
