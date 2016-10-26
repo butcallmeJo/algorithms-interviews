@@ -38,9 +38,9 @@ def fetch_all_repositories(user):
             print "error getting sha for %s" % (name)
         if name not in repos_dict:
             repos_dict[name] = [date, sha]
-    
+
     sorted_list = sort_dict_by_date(repos_dict)
-    
+
     for repo in sorted_list:
         print repo
         print "\t%s" % (str(repos_dict[repo][0]))
