@@ -18,6 +18,8 @@ move to the index i + length.
 one.
 """
 
+import sys
+
 def lossless_data_compression(input_string, width):
     """applies the compression to input_string
     input_string: string - input string to be compressed
@@ -122,7 +124,12 @@ def get_window(index, width):
     return window
 
 if __name__ == "__main__":
-    # change below or add more to test with other strings
-    INPT_STR = "abacabadabacaba"
-    WIDTH = 7
+
+    if len(sys.argv) == 3:
+        INPT_STR = str(sys.argv[1])
+        WIDTH = int(sys.argv[2])
+    else:
+        # change below or add more to test with other strings
+        INPT_STR = "abacabadabacaba"
+        WIDTH = 7
     lossless_data_compression(INPT_STR, WIDTH)
