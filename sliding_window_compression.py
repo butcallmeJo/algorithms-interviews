@@ -18,95 +18,111 @@ move to the index i + length.
 one.
 """
 
-def losslessDataCompression(input_string, width):
+def lossless_data_compression(input_string, width):
     """applies the compression to input_string
     input_string: string - input string to be compressed
     width: int - max width of the sliding window
     """
 
-    print "================================="
-    print "input_string: ", input_string
-    print "width:", width
-    print "================================="
+    # easy to read format for reading input string and width
+    print "====================================================="
+    print "input_string:\t\t", input_string
+    print "width:\t\t\t", width
 
     str_len = len(input_string)
+    # initializing i for index of input_string
     i = 0
+    # initializing result as an empty string
     result = ""
 
+    # to do: find a way to do the next loop more pythonic
     while i < str_len:
-        print "\ni:", i
-        # corr_width = min(i, width)
-        window = get_window(i, input_string, width)
-        print "window:", window
+        # calling get_window function to get the correct window
+        window = get_window(i, width)
         len_window = len(window)
+        # if window not empty, then str_window created for future ease of use
+        # adds the first char of input_string as the first char of result
         if len_window > 0:
             str_window = input_string[window[0]:window[-1]+1]
         else:
             str_window = ""
+            # adding the first char everytime
             result += input_string[i]
-            print "added:", input_string[i]
-        # print str_window
-        print "str_window:", str_window
-        # print len_window
 
-
+        # loop to get the max length where a match in window can be found in
+        # input_string. The loop goes thru the biggest length until 1
         for length in range(1, len_window+1)[::-1]:
+            # if statement to make sure that current index + length does not
+            # exceed the end of the input_string
             if not i+length > str_len:
-                print "length:", length
+                # appends the current char to result if it can't be found
+                # in window
                 if input_string[i] not in str_window:
                     result += input_string[i]
-                    print "added:", input_string[i]
-                    break
-                # result += input_string[i]
-                ret_result = return_result_to_append(input_string, i, window, length)
+                    break # needed to break out of loop and move i forward
+
+                # calls to_append and puts the return in a str var
+                ret_result = to_append(input_string, i, window, length)
 
                 if ret_result != "":
+                    # moving i forward by length since ret_result contains dup
+                    # char
                     result += ret_result
-                    print "added:", ret_result
                     i += length-1
-                    break
+                    break # needed to break out of loop and move i forward
                 elif length <= 1:
                     result += input_string[i]
-                    print "added:", input_string[i]
-                    break
-
-        # print "(" + str(start_index) + "," + str(length) + ")",
+                    break # needed to break out of loop and move i forward
         i += 1
-    print result
+    # formatting the result
+    print "compressed string:\t", result
+    print "====================================================="
 
-def return_result_to_append(input_string, i, window, length):
-    """returns what to append to result"""
+
+def to_append(input_string, i, window, length):
+    """function to return a string to append to final result
+    input_string: str - full string to be compressed
+    i: int - current index of the input string
+    window: list - current window containing the indices of input_string
+    length: int - current length to look AttributeError
+
+    return: the result as a string. Empty string if no match was found.
+    As a representation of matched string from 'start_index' and 'length'
+    long.
+    """
 
     result = ""
     for start_index in window:
         if start_index + length - 1 < i: # verified
             str_before = input_string[start_index:start_index+length] # v
             str_after = input_string[i:i+length] # verified
-            print "str_before:", str_before
-            print "str_after:", str_after
             if str_before in str_after:
-                # print "yes"
-                # print input_string[start_index:start_index+length-1]
-                # print input_string[i]
                 result = "(" + str(start_index) + "," + str(length) + ")"
                 break
     return result
 
-def get_window(index, input_string, width):
+def get_window(index, width):
+    """function to return the current window
+    index: int - current index of the input string
+    width: int - decides how big the window is
+
+    <<  Take the last width characters before the current one..
+        and call it the window
+        >>
+
+    return: the window as a list of indices of the original
+    input string.
+    """
     window = []
 
+    # loop to insert the correct index at the beginning of the window
+    # it gets all 'width' (how many) correct indices before index
     for i in range(0, index)[::-1][0:width]:
-        # print str(i) + input_string[i]
         window.insert(0, i)
     return window
 
 if __name__ == "__main__":
+    # change below or add more to test with other strings
     INPT_STR = "abacabadabacaba"
     WIDTH = 7
-    losslessDataCompression(INPT_STR, WIDTH)
-    INPT_STR = "abracadabra"
-    WIDTH = 5
-    losslessDataCompression(INPT_STR, WIDTH)
-    INPT_STR = "aaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    WIDTH = 12
-    losslessDataCompression(INPT_STR, WIDTH)
+    lossless_data_compression(INPT_STR, WIDTH)
